@@ -7,6 +7,8 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="15" />
+     <permission android:name="userdb.provider.permission.READ_PERMISSION"></permission>
+    <permission android:name="userdb.provider.permission.WRITE_PERMISSION"></permission> <!-- -->
 
     <application
         android:allowBackup="true"
@@ -23,7 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <provider android:authorities="@string/authority" android:name="UserDatabase"></provider>
+        <provider 
+            android:authorities="@string/authority" 
+            android:name="UserDatabase"
+            android:readPermission="userdb.provider.permission.READ_PERMISSION" 
+            android:writePermission="userdb.provider.permission.WRITE_PERMISSION" ></provider>
     </application>
 
 </manifest>

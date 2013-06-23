@@ -33,6 +33,7 @@
         <item>United Kingdom</item>
         <item>United States</item>
     </string-array>
-        <string name="authority">UserDB.provider</string>
+    
+    <string name="authority">userdb.provider</string>
     
 </resources>
