@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -21,7 +22,6 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -170,33 +170,44 @@ public class MainActivity extends FragmentActivity implements
 				if (finished) {
 					boolean duplicate = false;
 
-					// check to see if username is already taken
-
-					// query(Uri table, String[] columns, String selection,
-					// String[] args, String orderBy)
-					// Select U.Email
-					// From Users U
-					// Where U.Email = EmailVariable
-					
-					/*
 					if (UsernameArray.isEmpty()) {
 						UsernameTextView.setTextColor(Color.RED);
-					} else {
-						mProjection = new String[] { UserDatabase.COLUMN_EMAIL };
-						mListColumns = new String[] { UserDatabase.COLUMN_EMAIL };
-						mListItems = new int[] { R.id.Email };
-						mSelectionClause = UserDatabase.COLUMN_EMAIL + " = ?";
-						mSelectionArgs = new String[] { EmailVariable.getText().toString().trim() };
+					} else { // check to see if username is already taken
+						mProjection = new String[] { UserDatabase.COLUMN_USERNAME };
+						mListColumns = new String[] { UserDatabase.COLUMN_USERNAME };
+						mListItems = new int[] { R.id.Username };
+						mSelectionClause = UserDatabase.COLUMN_USERNAME + " = ?";
+						mSelectionArgs = new String[] { UsernameVariable.getText()
+								.toString().trim() };
+
+						Log.i("query", mProjection[0]);//error checking
+						Log.i("query", mListColumns[0]);//error checking
+						Log.i("query", "is =" + mListItems[0]);//error checking
+						Log.i("query", mSelectionClause);//error checking
+						Log.i("query", mSelectionArgs[0]);//error checking
+
 						mCursor = getContentResolver().query(
-								Uri.parse("content://userdb.provider/Users"),
-								mProjection, mSelectionClause, mSelectionArgs, null);
-						
-						mCursorAdapter = new SimpleCursorAdapter(
-								getApplicationContext(), R.layout.query1,
-								mCursor, mListColumns, mListItems);
+								UserDatabase.CONTENT_URI, mProjection,
+								mSelectionClause, mSelectionArgs, null);
+
+						Log.i("query", "count = " + mCursor.getCount());//error checking
+
+						if (mCursor != null) {//check to see if the query is null
+							if (mCursor.getCount() > 0) {
+								if(mCursor.moveToFirst()){//move to the first item
+								Log.i("query", mCursor.getString(0));//error checking
+								
+								duplicate = true; //if it's null then don't add it
+								
+								while(mCursor.moveToNext())//error checking
+									Log.i("query", mCursor.getString(0));
+								}
+							}
+						}
+
+						Log.i("query", "count = " + mCursor.getCount()); //error checking
 					}
-					*/
-					
+
 					if (!UsernameArray.isEmpty()
 							&& UsernameArray.contains(UsernameVariable
 									.getText().toString())) {
@@ -206,8 +217,8 @@ public class MainActivity extends FragmentActivity implements
 						Toast.makeText(getApplicationContext(),
 								"Username already taken", Toast.LENGTH_SHORT)
 								.show();
-					} else {
-
+					} else { // add everything to the database
+						
 						Uri mNewUri;
 						ContentValues mNewValues = new ContentValues();
 						mNewValues.put(UserDatabase.COLUMN_FIRSTNAME,
